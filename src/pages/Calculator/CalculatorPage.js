@@ -29,6 +29,7 @@ class CalculatorPage extends Component {
             ]
         };
         this.addRow = this.addRow.bind(this);
+        this.removeRow = this.removeRow.bind(this);
     }
     handleChange(e) {
         let index = e.target.className;
@@ -42,9 +43,10 @@ class CalculatorPage extends Component {
         let gpa = 0;
         let totalHours = 0;
         for(i=0; i<this.state.rows.length;++i){
-            let grade = this.state.rows[i]["grade"];
+            let grade = this.state.rows[i]["grade"].toUpperCase();
             let hours = this.state.rows[i]["hours"];
             if(hours == '' || !(grade in gradeTable) || hours <= 0 || isNaN(hours)){
+                document.getElementById("error").innerHTML = "Error: Empty/Incomplete Grade Rows";
                 return;
             }
             hours = Number(hours);
@@ -87,6 +89,13 @@ class CalculatorPage extends Component {
         });
         this.setState({rows: newRows});
     }
+    removeRow() {
+        let newRows = this.state.rows;
+        if(newRows.length - 1 > 0){
+            newRows.pop();
+        }
+        this.setState({rows: newRows}); 
+    }
     render() {
         return (
         <div className="App">
@@ -99,9 +108,11 @@ class CalculatorPage extends Component {
                 </tr>
                {this.renderTable()}
             </table>
-            <button type='button' onClick={this.addRow}>+</button>
+            <button type='button' onClick={this.addRow}>Add Row</button>
+            <button type='button' onClick={this.removeRow}>Remove Row</button>
             <button type='button' onClick={this.handleSubmit.bind(this)}>Click to submit</button>
             <button type='button' onClick={this.handleClear.bind(this)}>Click to reset</button>
+            <output id="error"></output>
             <output id='out'></output>
             </header>
         </div>
